@@ -18,7 +18,7 @@ export const VideoPlayer = ({ src, onEnded }: VideoPlayerProps) => {
   }, [src]);
 
   return (
-    <div className="fixed inset-0 bg-background">
+    <div className="fixed inset-0 bg-background p-5">
       <video
         ref={videoRef}
         className="w-full h-full object-contain"

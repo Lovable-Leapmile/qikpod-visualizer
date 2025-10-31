@@ -63,13 +63,17 @@ export const useEventPoller = () => {
 
         setConnectionStatus("connected");
       } else {
+        // No records - switch to ALL.mp4
+        if (currentVideo !== VIDEO_MAP.ALL) {
+          switchToAll();
+        }
         setConnectionStatus("idle");
       }
     } catch (error) {
       console.error("Polling error:", error);
       setConnectionStatus("error");
     }
-  }, [lastAction, handleNewAction]);
+  }, [lastAction, handleNewAction, currentVideo, switchToAll]);
 
   useEffect(() => {
     // Start polling immediately

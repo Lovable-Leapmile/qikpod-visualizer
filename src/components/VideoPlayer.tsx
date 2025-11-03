@@ -48,11 +48,11 @@ export const VideoPlayer = ({ src, onEnded }: VideoPlayerProps) => {
   }, [src, isVideo]);
 
   return (
-    <div className="fixed inset-0 bg-background p-5">
+    <div className="fixed inset-0 bg-background">
       {isVideo ? (
         <video
           ref={videoRef}
-          className={`w-full h-full object-contain transition-opacity duration-500 ${fadeIn ? 'opacity-100' : 'opacity-0'}`}
+          className={`w-full h-full object-cover transition-opacity duration-500 ${fadeIn ? 'opacity-100' : 'opacity-0'}`}
           loop
           muted
           autoPlay
@@ -66,7 +66,7 @@ export const VideoPlayer = ({ src, onEnded }: VideoPlayerProps) => {
         <img
           src={src}
           alt="Action visualization"
-          className={`w-full h-full object-contain transition-opacity duration-500 ${fadeIn ? 'opacity-100' : 'opacity-0'}`}
+          className={`w-full h-full object-cover transition-opacity duration-500 ${fadeIn ? 'opacity-100' : 'opacity-0'}`}
         />
       )}
     </div>

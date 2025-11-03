@@ -11,10 +11,26 @@ export const VideoPlayer = ({ src, onEnded }: VideoPlayerProps) => {
 
   useEffect(() => {
     if (isVideo && videoRef.current) {
-      videoRef.current.load();
-      videoRef.current.play().catch((error) => {
-        console.error("Error playing video:", error);
-      });
+      const video = videoRef.current;
+      video.load();
+      
+      const playVideo = () => {
+        video.play().catch((error) => {
+          console.error("Error playing video:", error);
+        });
+      };
+
+      // Wait for video to be ready before playing
+      if (video.readyState >= 3) {
+        playVideo();
+      } else {
+        video.addEventListener('loadeddata', playVideo, { once: true });
+      }
+
+      return () => {
+        video.pause();
+        video.removeEventListener('loadeddata', playVideo);
+      };
     }
   }, [src, isVideo]);
 

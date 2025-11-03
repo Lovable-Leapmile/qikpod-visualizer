@@ -3,7 +3,7 @@ import { fetchLatestEvent } from "@/services/apiService";
 import { VideoAction, VIDEO_MAP } from "@/types/api";
 
 const POLL_INTERVAL = 5000; // 5 seconds
-const AUTO_SWITCH_DELAY = 60000; // 1 minute
+const AUTO_SWITCH_DELAY = 120000; // 2 minutes
 const VALID_ACTIONS: VideoAction[] = [
   "SCARA",
   "SHUTTLE",

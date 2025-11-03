@@ -4,6 +4,7 @@ import { VideoAction, VIDEO_MAP } from "@/types/api";
 
 const POLL_INTERVAL = 5000; // 5 seconds
 const AUTO_SWITCH_DELAY = 120000; // 2 minutes
+const SLIDESHOW_INTERVAL = 10000; // 10 seconds per image
 const VALID_ACTIONS: VideoAction[] = [
   "SCARA",
   "SHUTTLE",
@@ -14,20 +15,35 @@ const VALID_ACTIONS: VideoAction[] = [
 ];
 
 export const useEventPoller = () => {
-  const [currentVideo, setCurrentVideo] = useState<string>(VIDEO_MAP.ALL);
+  const [currentVideo, setCurrentVideo] = useState<string>(VIDEO_MAP.SCARA);
   const [connectionStatus, setConnectionStatus] = useState<"connected" | "error" | "idle">("idle");
   const [lastAction, setLastAction] = useState<string>("");
   const [autoSwitchTimer, setAutoSwitchTimer] = useState<NodeJS.Timeout | null>(null);
+  const [slideshowTimer, setSlideshowTimer] = useState<NodeJS.Timeout | null>(null);
+  const [isSlideshow, setIsSlideshow] = useState(false);
+  const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
 
-  const switchToAll = useCallback(() => {
-    setCurrentVideo(VIDEO_MAP.ALL);
-    setLastAction("");
+  const stopSlideshow = useCallback(() => {
+    if (slideshowTimer) {
+      clearTimeout(slideshowTimer);
+      setSlideshowTimer(null);
+    }
+    setIsSlideshow(false);
+  }, [slideshowTimer]);
+
+  const startSlideshow = useCallback(() => {
+    setIsSlideshow(true);
+    setCurrentSlideIndex(0);
+    setCurrentVideo(VIDEO_MAP[VALID_ACTIONS[0]]);
   }, []);
 
   const handleNewAction = useCallback(
     (action: string) => {
       if (VALID_ACTIONS.includes(action as VideoAction)) {
         const videoPath = VIDEO_MAP[action as VideoAction];
+        
+        // Stop any slideshow
+        stopSlideshow();
         
         // Clear any existing auto-switch timer
         if (autoSwitchTimer) {
@@ -38,15 +54,15 @@ export const useEventPoller = () => {
         setCurrentVideo(videoPath);
         setLastAction(action);
 
-        // Set timer to switch back to ALL.mp4 after 1 minute
+        // Set timer to start slideshow after 2 minutes
         const timer = setTimeout(() => {
-          switchToAll();
+          startSlideshow();
         }, AUTO_SWITCH_DELAY);
 
         setAutoSwitchTimer(timer);
       }
     },
-    [autoSwitchTimer, switchToAll]
+    [autoSwitchTimer, stopSlideshow, startSlideshow]
   );
 
   const pollApi = useCallback(async () => {
@@ -63,17 +79,28 @@ export const useEventPoller = () => {
 
         setConnectionStatus("connected");
       } else {
-        // No records - switch to ALL.mp4
-        if (currentVideo !== VIDEO_MAP.ALL) {
-          switchToAll();
-        }
         setConnectionStatus("idle");
       }
     } catch (error) {
       console.error("Polling error:", error);
       setConnectionStatus("error");
     }
-  }, [lastAction, handleNewAction, currentVideo, switchToAll]);
+  }, [lastAction, handleNewAction]);
+
+  // Handle slideshow cycling
+  useEffect(() => {
+    if (isSlideshow) {
+      const timer = setTimeout(() => {
+        const nextIndex = (currentSlideIndex + 1) % VALID_ACTIONS.length;
+        setCurrentSlideIndex(nextIndex);
+        setCurrentVideo(VIDEO_MAP[VALID_ACTIONS[nextIndex]]);
+      }, SLIDESHOW_INTERVAL);
+      
+      setSlideshowTimer(timer);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [isSlideshow, currentSlideIndex]);
 
   useEffect(() => {
     // Start polling immediately
@@ -87,8 +114,11 @@ export const useEventPoller = () => {
       if (autoSwitchTimer) {
         clearTimeout(autoSwitchTimer);
       }
+      if (slideshowTimer) {
+        clearTimeout(slideshowTimer);
+      }
     };
-  }, [pollApi, autoSwitchTimer]);
+  }, [pollApi, autoSwitchTimer, slideshowTimer]);
 
   return {
     currentVideo,

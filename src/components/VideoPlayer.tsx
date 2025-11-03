@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 interface VideoPlayerProps {
   src: string;
@@ -8,6 +8,19 @@ interface VideoPlayerProps {
 export const VideoPlayer = ({ src, onEnded }: VideoPlayerProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const isVideo = src.endsWith('.mp4');
+  const [fadeIn, setFadeIn] = useState(true);
+
+  useEffect(() => {
+    // Fade out
+    setFadeIn(false);
+    
+    // Wait for fade out, then fade in new content
+    const timer = setTimeout(() => {
+      setFadeIn(true);
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [src]);
 
   useEffect(() => {
     if (isVideo && videoRef.current) {
@@ -39,7 +52,7 @@ export const VideoPlayer = ({ src, onEnded }: VideoPlayerProps) => {
       {isVideo ? (
         <video
           ref={videoRef}
-          className="w-full h-full object-contain"
+          className={`w-full h-full object-contain transition-opacity duration-500 ${fadeIn ? 'opacity-100' : 'opacity-0'}`}
           loop
           muted
           autoPlay
@@ -53,7 +66,7 @@ export const VideoPlayer = ({ src, onEnded }: VideoPlayerProps) => {
         <img
           src={src}
           alt="Action visualization"
-          className="w-full h-full object-contain"
+          className={`w-full h-full object-contain transition-opacity duration-500 ${fadeIn ? 'opacity-100' : 'opacity-0'}`}
         />
       )}
     </div>

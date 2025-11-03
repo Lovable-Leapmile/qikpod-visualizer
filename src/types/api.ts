@@ -25,11 +25,11 @@ export type VideoAction =
   | "ALL";
 
 export const VIDEO_MAP: Record<VideoAction, string> = {
-  SCARA: "/videos/SCARA.jpg",
-  SHUTTLE: "/videos/SHUTTLE.jpg",
-  SCISSORLIFT: "/videos/SCISSORLIFT.jpg",
-  CONVEYOR: "/videos/CONVEYOR.jpg",
-  LOCKER: "/videos/LOCKER.jpg",
-  BAYDOOR: "/videos/BAYDOOR.jpg",
+  SCARA: "/videos/SCARA.jpeg",
+  SHUTTLE: "/videos/SHUTTLE.jpeg",
+  SCISSORLIFT: "/videos/SCISSORLIFT.jpeg",
+  CONVEYOR: "/videos/CONVEYOR.jpeg",
+  LOCKER: "/videos/LOCKER.jpeg",
+  BAYDOOR: "/videos/BAYDOOR.jpeg",
   ALL: "/videos/ALL.mp4",
 };

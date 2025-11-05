@@ -17,6 +17,7 @@ export interface ApiResponse {
 
 export type VideoAction = 
   | "SCARA"
+  | "AMR"
   | "SHUTTLE" 
   | "SCISSORLIFT"
   | "CONVEYOR"
@@ -26,6 +27,7 @@ export type VideoAction =
 
 export const VIDEO_MAP: Record<VideoAction, string> = {
   SCARA: "/videos/SCARA.jpeg",
+  AMR: "/videos/AMR.jpeg",
   SHUTTLE: "/videos/SHUTTLE.jpeg",
   SCISSORLIFT: "/videos/SCISSORLIFT.jpeg",
   CONVEYOR: "/videos/CONVEYOR.jpeg",

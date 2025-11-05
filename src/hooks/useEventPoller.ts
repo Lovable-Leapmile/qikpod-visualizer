@@ -12,6 +12,7 @@ const VALID_ACTIONS: VideoAction[] = [
   "CONVEYOR",
   "LOCKER",
   "BAYDOOR",
+  "AMR",
 ];
 
 export const useEventPoller = () => {

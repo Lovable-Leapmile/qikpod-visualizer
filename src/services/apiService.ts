@@ -1,6 +1,6 @@
 import { ApiResponse } from "@/types/api";
 
-const API_URL = "https://staging.qikpod.com/pubsub/subscribe";
+const API_URL = "https://eventinternal.leapmile.com/pubsub/subscribe";
 const API_TOKEN = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhY2wiOiJhZG1pbiIsImV4cCI6MTkwMDY2MDExOX0.m9Rrmvbo22sJpWgTVynJLDIXFxOfym48F-kGy-wSKqQ";
 
 export const fetchLatestEvent = async (): Promise<ApiResponse | null> => {
